@@ -3,10 +3,16 @@ md5 = {
   a += q + x + t;
   return ((a << s | a >>> 32 - s) + b) & 4294967295;
  },
- hash: function(s) {
+ hash: function(s, enc) {
   var c16 = "0123456789abcdef",
-        r = md5.md51(s),
+        r,
       res = "";
+
+  if(enc) {
+   r = md5.md51(md5.encode(s));
+  }else{
+   r = md5.md51(s);
+  }
 
   for(var i = 0;i < 4;++i) {
    res += c16[r[i] >> 4 & 15];
@@ -20,6 +26,27 @@ md5 = {
   }
 
   return res;
+ },
+ encode: function(s) {
+  s = s.replace(/\r\n/g, "\n");
+  var utftext = "";
+  var sLength = s.length;
+
+  for (var i = 0; i < sLength; i++) {
+   var c = s.charCodeAt(i);
+   if(c < 128) {
+    utftext += String.fromCharCode(c);
+   }else if(c > 127 && c < 2048) {
+    utftext += String.fromCharCode((c >> 6) | 192);
+    utftext += String.fromCharCode((c & 63) | 128);
+   }else{
+    utftext += String.fromCharCode((c >> 12) | 224);
+    utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+    utftext += String.fromCharCode((c & 63) | 128);
+   }
+  }
+
+  return utftext;
  },
  md5cycle: function(k) {
   var r = md5.md5_rounds(1732584193, -271733879, -1732584194, 271733878, k);

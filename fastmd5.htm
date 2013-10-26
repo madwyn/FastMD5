@@ -1,4 +1,4 @@
-﻿<html>
+<html>
  <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8">
   <title>FastMD5 Test</title>
@@ -41,13 +41,13 @@
    function hash1() {
     var timeStart = new Date().getTime();
     for(var i = 0;i < 1000000;++i) {
-     md5.hash(i + "");
+     md5.hash(i + "", false);
     }
     var timeEnd = new Date().getTime();
     result(timeEnd - timeStart + "ms");
    }
    function hash2() {
-    result(md5.hash(inputElem.value));
+    result(md5.hash(inputElem.value, true));
    }
   </script>
  </body>
