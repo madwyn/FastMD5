@@ -28,25 +28,40 @@ md5 = {
   return res;
  },
  encode: function(s) {
-  s = s.replace(/\r\n/g, "\n");
-  var utftext = "";
-  var sLength = s.length;
+  if(s === null || typeof s === "undefined"){
+   return "";
+  }
 
-  for (var i = 0; i < sLength; i++) {
-   var c = s.charCodeAt(i);
-   if(c < 128) {
-    utftext += String.fromCharCode(c);
-   }else if(c > 127 && c < 2048) {
-    utftext += String.fromCharCode((c >> 6) | 192);
-    utftext += String.fromCharCode((c & 63) | 128);
+  s = s + "";
+  var utf = "", start, end, sLen;
+  start = end = 0;
+
+  sLen = s.length;
+  for(var i = 0;i < sLen;i++) {
+   var c1 = s.charCodeAt(i);
+   var enc = null;
+
+   if(c1 < 128) {
+    end++;
+   }else if(c1 > 127 && c1 < 2048) {
+    enc = String.fromCharCode((c1 >> 6) | 192, (c1 & 63) | 128);
    }else{
-    utftext += String.fromCharCode((c >> 12) | 224);
-    utftext += String.fromCharCode(((c >> 6) & 63) | 128);
-    utftext += String.fromCharCode((c & 63) | 128);
+    enc = String.fromCharCode((c1 >> 12) | 224, ((c1 >> 6) & 63) | 128, (c1 & 63) | 128);
+   }
+   if(enc !== null) {
+    if(end > start) {
+     utf += s.slice(start, end);
+    }
+    utf += enc;
+    start = end = i + 1;
    }
   }
 
-  return utftext;
+  if(end > start) {
+   utf += s.slice(start, sLen);
+  }
+
+  return utf;
  },
  md5cycle: function(k) {
   var r = md5.md5_rounds(1732584193, -271733879, -1732584194, 271733878, k);
