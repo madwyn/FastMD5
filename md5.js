@@ -1,14 +1,23 @@
 md5 = {
+ B: {
+  tail: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  md5blks: []
+ },
  c4: [128, 32768, 8388608, -2147483648],
  c16: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"],
  cS: [0, 8, 16, 24],
+
  cmn: function(q, a, b, x, s1, s2, t) {
   a += q + x + t;
   return ((a << s1 | a >>> s2) + b) << 0;
  },
  hash: function(s, enc) {
-    var r,
-      res = "";
+  var r,
+    res = "";
+
+  for(var i = 0;i < 16;i++) {
+   md5.B.tail[i] = 0;
+  }
 
   if(enc) {
    r = md5.md51(md5.encode(s));
@@ -170,14 +179,15 @@ md5 = {
  },
  md51: function(s) {
   var n = s.length,
-   tail = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   state = false;
 
   for(var i = 64;i <= n;i += 64) {
    if(i == 64) {
-    state = md5.md5cycle(md5.md5blk(s.substring(0, 64)));
+    md5.md5blk(s.substring(0, 64));
+    state = md5.md5cycle(md5.md5blks);
    }else{
-    state = md5.md5cycleAdd(state, md5.md5blk(s.substring(i - 64, i)));
+    md5.md5blk(s.substring(i - 64, i));
+    state = md5.md5cycleAdd(state, md5.md5blks);
    }
   }
 
@@ -188,33 +198,31 @@ md5 = {
   var sl = s.length;
 
   for(i = 0;i < sl;++i) {
-   tail[i >> 2] |= s.charCodeAt(i) << md5.cS[i % 4];
+   md5.B.tail[i >> 2] |= s.charCodeAt(i) << md5.cS[i % 4];
   }
-  tail[i >> 2] |= md5.c4[i % 4];
+  md5.B.tail[i >> 2] |= md5.c4[i % 4];
 
   if(i > 55) {
-   state = md5.md5cycleAdd(state, tail);
+   state = md5.md5cycleAdd(state, md5.B.tail);
    for(j = 0;j < 16;j++) {
-    tail[j] = 0;
+    md5.B.tail[j] = 0;
    }
   }
 
-  tail[14] = n * 8;
+  md5.B.tail[14] = n * 8;
 
   if(typeof state == "boolean") {
-   return md5.md5cycle(tail);
+   return md5.md5cycle(md5.B.tail);
   }else{
-   return md5.md5cycleAdd(state, tail);
+   return md5.md5cycleAdd(state, md5.B.tail);
   }
  },
  md5blk: function(s) {
-  var md5blks = [];
   for (var i = 0;i < 64;i += 4) {
-   md5blks[i >> 2] = s.charCodeAt(i)
+   md5.md5blks[i >> 2] = s.charCodeAt(i)
    + (s.charCodeAt(i+1) << 8)
    + (s.charCodeAt(i+2) << 16)
    + (s.charCodeAt(i+3) << 24);
   }
-  return md5blks;
  }
 };
