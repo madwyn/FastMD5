@@ -1,11 +1,13 @@
 md5 = {
+ c4: [128, 32768, 8388608, -2147483648],
+ c16: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"],
+ cS: [0, 8, 16, 24],
  cmn: function(q, a, b, x, s1, s2, t) {
   a += q + x + t;
   return ((a << s1 | a >>> s2) + b) << 0;
  },
  hash: function(s, enc) {
-  var c16 = "0123456789abcdef",
-        r,
+    var r,
       res = "";
 
   if(enc) {
@@ -15,14 +17,14 @@ md5 = {
   }
 
   for(var i = 0;i < 4;++i) {
-   res += c16[r[i] >> 4 & 15];
-   res += c16[r[i] & 15];
-   res += c16[r[i] >> 12 & 15];
-   res += c16[r[i] >> 8 & 15];
-   res += c16[r[i] >> 20 & 15];
-   res += c16[r[i] >> 16 & 15];
-   res += c16[r[i] >> 28 & 15];
-   res += c16[r[i] >> 24 & 15];
+   res += md5.c16[r[i] >> 4 & 15];
+   res += md5.c16[r[i] & 15];
+   res += md5.c16[r[i] >> 12 & 15];
+   res += md5.c16[r[i] >> 8 & 15];
+   res += md5.c16[r[i] >> 20 & 15];
+   res += md5.c16[r[i] >> 16 & 15];
+   res += md5.c16[r[i] >> 28 & 15];
+   res += md5.c16[r[i] >> 24 & 15];
   }
 
   return res;
@@ -169,11 +171,11 @@ md5 = {
  md51: function(s) {
   var n = s.length,
    tail = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  state = 0;
+  state = false;
 
   for(var i = 64;i <= n;i += 64) {
    if(i == 64) {
-    state = md5.md5cycle(md5.md5blk(s.substring(i - 64, i)));
+    state = md5.md5cycle(md5.md5blk(s.substring(0, 64)));
    }else{
     state = md5.md5cycleAdd(state, md5.md5blk(s.substring(i - 64, i)));
    }
@@ -186,9 +188,9 @@ md5 = {
   var sl = s.length;
 
   for(i = 0;i < sl;++i) {
-   tail[i >> 2] |= s.charCodeAt(i) << ((i % 4) << 3);
+   tail[i >> 2] |= s.charCodeAt(i) << md5.cS[i % 4];
   }
-  tail[i >> 2] |= 128 << ((i % 4) << 3);
+  tail[i >> 2] |= md5.c4[i % 4];
 
   if(i > 55) {
    state = md5.md5cycleAdd(state, tail);
@@ -199,7 +201,7 @@ md5 = {
 
   tail[14] = n * 8;
 
-  if(state == 0) {
+  if(typeof state == "boolean") {
    return md5.md5cycle(tail);
   }else{
    return md5.md5cycleAdd(state, tail);
