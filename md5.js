@@ -1,6 +1,6 @@
 md5 = {
  B: {
-  tail: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  tail: [],
   md5blks: []
  },
  c4: [128, 32768, 8388608, -2147483648],
@@ -184,10 +184,10 @@ md5 = {
   for(var i = 64;i <= n;i += 64) {
    if(i == 64) {
     md5.md5blk(s.substring(0, 64));
-    state = md5.md5cycle(md5.md5blks);
+    state = md5.md5cycle(md5.B.md5blks);
    }else{
     md5.md5blk(s.substring(i - 64, i));
-    state = md5.md5cycleAdd(state, md5.md5blks);
+    state = md5.md5cycleAdd(state, md5.B.md5blks);
    }
   }
 
@@ -219,7 +219,7 @@ md5 = {
  },
  md5blk: function(s) {
   for (var i = 0;i < 64;i += 4) {
-   md5.md5blks[i >> 2] = s.charCodeAt(i)
+   md5.B.md5blks[i >> 2] = s.charCodeAt(i)
    + (s.charCodeAt(i+1) << 8)
    + (s.charCodeAt(i+2) << 16)
    + (s.charCodeAt(i+3) << 24);
