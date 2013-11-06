@@ -41,13 +41,13 @@
    function hash1() {
     var timeStart = new Date().getTime();
     for(var i = 0;i < 1000000;++i) {
-     md5.hash(i + "", false);
+     md5.hash(i + "", false, true);
     }
     var timeEnd = new Date().getTime();
     result(timeEnd - timeStart + "ms");
    }
    function hash2() {
-    result(md5.hash(inputElem.value, true));
+    result(md5.hash(inputElem.value, true, false));
    }
   </script>
  </body>

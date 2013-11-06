@@ -1,5 +1,6 @@
 md5 = {
  B: {
+  res: [],
   tail: [],
   md5blks: []
  },
@@ -9,11 +10,11 @@ md5 = {
 
  cmn: function(q, a, b, x, s1, s2, t) {
   a += q + x + t;
+
   return ((a << s1 | a >>> s2) + b) << 0;
  },
- hash: function(s, enc) {
-  var r,
-    res = "";
+ hash: function(s, enc, arr) {
+  var r;
 
   for(var i = 0;i < 16;i++) {
    md5.B.tail[i] = 0;
@@ -25,18 +26,47 @@ md5 = {
    r = md5.md51(s);
   }
 
-  for(var i = 0;i < 4;++i) {
-   res += md5.c16[r[i] >> 4 & 15];
-   res += md5.c16[r[i] & 15];
-   res += md5.c16[r[i] >> 12 & 15];
-   res += md5.c16[r[i] >> 8 & 15];
-   res += md5.c16[r[i] >> 20 & 15];
-   res += md5.c16[r[i] >> 16 & 15];
-   res += md5.c16[r[i] >> 28 & 15];
-   res += md5.c16[r[i] >> 24 & 15];
-  }
+  var tmp = r[0];md5.B.res[1] = md5.c16[tmp & 15];
+  tmp >>= 4;md5.B.res[0] = md5.c16[tmp & 15];
+  tmp >>= 4;md5.B.res[3] = md5.c16[tmp & 15];
+  tmp >>= 4;md5.B.res[2] = md5.c16[tmp & 15];
+  tmp >>= 4;md5.B.res[5] = md5.c16[tmp & 15];
+  tmp >>= 4;md5.B.res[4] = md5.c16[tmp & 15];
+  tmp >>= 4;md5.B.res[7] = md5.c16[tmp & 15];
+  tmp >>= 4;md5.B.res[6] = md5.c16[tmp & 15];
 
-  return res;
+  tmp = r[1];md5.B.res[9] = md5.c16[tmp & 15];
+  tmp >>= 4;md5.B.res[8] = md5.c16[tmp & 15];
+  tmp >>= 4;md5.B.res[11] = md5.c16[tmp & 15];
+  tmp >>= 4;md5.B.res[10] = md5.c16[tmp & 15];
+  tmp >>= 4;md5.B.res[13] = md5.c16[tmp & 15];
+  tmp >>= 4;md5.B.res[12] = md5.c16[tmp & 15];
+  tmp >>= 4;md5.B.res[15] = md5.c16[tmp & 15];
+  tmp >>= 4;md5.B.res[14] = md5.c16[tmp & 15];
+
+  tmp = r[2];md5.B.res[17] = md5.c16[tmp & 15];
+  tmp >>= 4;md5.B.res[16] = md5.c16[tmp & 15];
+  tmp >>= 4;md5.B.res[19] = md5.c16[tmp & 15];
+  tmp >>= 4;md5.B.res[18] = md5.c16[tmp & 15];
+  tmp >>= 4;md5.B.res[21] = md5.c16[tmp & 15];
+  tmp >>= 4;md5.B.res[20] = md5.c16[tmp & 15];
+  tmp >>= 4;md5.B.res[23] = md5.c16[tmp & 15];
+  tmp >>= 4;md5.B.res[22] = md5.c16[tmp & 15];
+
+  tmp = r[3];md5.B.res[25] = md5.c16[tmp & 15];
+  tmp >>= 4;md5.B.res[24] = md5.c16[tmp & 15];
+  tmp >>= 4;md5.B.res[27] = md5.c16[tmp & 15];
+  tmp >>= 4;md5.B.res[26] = md5.c16[tmp & 15];
+  tmp >>= 4;md5.B.res[29] = md5.c16[tmp & 15];
+  tmp >>= 4;md5.B.res[28] = md5.c16[tmp & 15];
+  tmp >>= 4;md5.B.res[31] = md5.c16[tmp & 15];
+  tmp >>= 4;md5.B.res[30] = md5.c16[tmp & 15];
+
+  if(arr) {
+   return md5.B.res;
+  }else{
+   return md5.B.res[0] + md5.B.res[1] + md5.B.res[2] + md5.B.res[3] + md5.B.res[4] + md5.B.res[5] + md5.B.res[6] + md5.B.res[7] + md5.B.res[8] + md5.B.res[9] + md5.B.res[10] + md5.B.res[11] + md5.B.res[12] + md5.B.res[13] + md5.B.res[14] + md5.B.res[15] + md5.B.res[16] + md5.B.res[17] + md5.B.res[18] + md5.B.res[19] + md5.B.res[20] + md5.B.res[21] + md5.B.res[22] + md5.B.res[23] + md5.B.res[24] + md5.B.res[25] + md5.B.res[26] + md5.B.res[27] + md5.B.res[28] + md5.B.res[29] + md5.B.res[30] + md5.B.res[31];
+  }
  },
  encode: function(s) {
   if(s === null || typeof s === "undefined"){
@@ -204,7 +234,7 @@ md5 = {
 
   if(i > 55) {
    state = md5.md5cycleAdd(state, md5.B.tail);
-   for(j = 0;j < 16;j++) {
+   for(var j = 0;j < 16;j++) {
     md5.B.tail[j] = 0;
    }
   }
