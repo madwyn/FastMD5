@@ -209,23 +209,23 @@ md5 = {
  },
  md51: function(s) {
   var n = s.length,
-  state = false;
+  state = false,
+     sl = n;
 
-  for(var i = 64;i <= n;i += 64) {
-   if(i == 64) {
-    md5.md5blk(s.substring(0, 64));
-    state = md5.md5cycle(md5.B.md5blks);
-   }else{
-    md5.md5blk(s.substring(i - 64, i));
-    state = md5.md5cycleAdd(state, md5.B.md5blks);
+  if(n > 63) {
+   for(var i = 64;i <= n;i += 64) {
+    if(i == 64) {
+     md5.md5blk(s.substring(0, 64));
+     state = md5.md5cycle(md5.B.md5blks);
+    }else{
+     md5.md5blk(s.substring(i - 64, i));
+     state = md5.md5cycleAdd(state, md5.B.md5blks);
+    }
    }
-  }
 
-  if(i > 64) {
    s = s.substring(i - 64);
+   sl = s.length;
   }
-
-  var sl = s.length;
 
   for(i = 0;i < sl;++i) {
    md5.B.tail[i >> 2] |= s.charCodeAt(i) << md5.cS[i % 4];
