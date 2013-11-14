@@ -17,9 +17,22 @@ md5 = {
  hash: function(s, enc, arr) {
   var r;
 
-  for(var i = 0;i < 16;i++) {
-   this.B.tail[i] = 0;
-  }
+  this.B.tail[0] = 0;
+  this.B.tail[1] = 0;
+  this.B.tail[2] = 0;
+  this.B.tail[3] = 0;
+  this.B.tail[4] = 0;
+  this.B.tail[5] = 0;
+  this.B.tail[6] = 0;
+  this.B.tail[7] = 0;
+  this.B.tail[8] = 0;
+  this.B.tail[9] = 0;
+  this.B.tail[10] = 0;
+  this.B.tail[11] = 0;
+  this.B.tail[12] = 0;
+  this.B.tail[13] = 0;
+  this.B.tail[14] = 0;
+  this.B.tail[15] = 0;
 
   this.B.state[0] = 0;
 
@@ -239,16 +252,29 @@ md5 = {
    sl = s.length;
   }
 
-  for(i = 0;i < sl;++i) {
+  for(i = 0;i < sl;i++) {
    this.B.tail[i >> 2] |= s.charCodeAt(i) << this.cS[i % 4];
   }
   this.B.tail[i >> 2] |= this.c4[i % 4];
 
   if(i > 55) {
    this.md5cycleAdd(this.B.state, this.B.tail, true);
-   for(var j = 0;j < 16;j++) {
-    this.B.tail[j] = 0;
-   }
+
+   this.B.tail[0] = 0;
+   this.B.tail[1] = 0;
+   this.B.tail[2] = 0;
+   this.B.tail[3] = 0;
+   this.B.tail[4] = 0;
+   this.B.tail[5] = 0;
+   this.B.tail[6] = 0;
+   this.B.tail[7] = 0;
+   this.B.tail[8] = 0;
+   this.B.tail[9] = 0;
+   this.B.tail[10] = 0;
+   this.B.tail[11] = 0;
+   this.B.tail[12] = 0;
+   this.B.tail[13] = 0;
+   this.B.tail[15] = 0;
   }
 
   this.B.tail[14] = n * 8;
