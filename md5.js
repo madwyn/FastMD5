@@ -15,7 +15,7 @@ md5 = {
   return ((a << s1 | a >>> s2) + b) << 0;
  },
  hash: function(s, enc, arr) {
-  var r;
+  var r, tmp;
 
   this.B.tail[0] = 0;
   this.B.tail[1] = 0;
@@ -42,7 +42,7 @@ md5 = {
    r = this.md51(s);
   }
 
-  var tmp = r[0];this.B.res[1] = this.c16[tmp & 15];
+  tmp = r[0];this.B.res[1] = this.c16[tmp & 15];
   tmp >>= 4;this.B.res[0] = this.c16[tmp & 15];
   tmp >>= 4;this.B.res[3] = this.c16[tmp & 15];
   tmp >>= 4;this.B.res[2] = this.c16[tmp & 15];
@@ -85,14 +85,11 @@ md5 = {
   }
  },
  encode: function(s) {
-  var utf = "",
-    start = 0,
-      end = 0,
-     sLen = s.length;
+  var c, enc, i = 0, utf = "", start = 0, end = 0, sLen = s.length;
 
-  for(var i = 0;i < sLen;i++) {
-   var c = s.charCodeAt(i);
-   var enc = null;
+  for(;i < sLen;i++) {
+   c = s.charCodeAt(i);
+   enc = null;
 
    if(c < 128) {
     end++;
@@ -234,11 +231,10 @@ md5 = {
   return [a, b, c, d];
  },
  md51: function(s) {
-  var n = s.length,
-     sl = n;
+  var i, n = s.length, sl = n;
 
   if(n > 63) {
-   for(var i = 64;i <= n;i += 64) {
+   for(i = 64;i <= n;i += 64) {
     if(i == 64) {
      this.md5blk(s.substring(0, 64));
      this.md5cycle(this.B.md5blks, true);
