@@ -116,12 +116,7 @@ md5 = {
 	md5cycle: function(k, sw) {
 		var r = this.md5_rounds(1732584193, -271733879, -1732584194, 271733878, k, true);
 
-		if(sw) {
-			this.B.state[0] = (r[0] + 1732584193) << 0;
-			this.B.state[1] = (r[1] - 271733879) << 0;
-			this.B.state[2] = (r[2] - 1732584194) << 0;
-			this.B.state[3] = (r[3] + 271733878) << 0;
-		}else{
+		if(!sw) {
 			return [
 				(r[0] + 1732584193) << 0,
 				(r[1] - 271733879) << 0,
@@ -129,16 +124,16 @@ md5 = {
 				(r[3] + 271733878) << 0
 			];
 		}
+		
+		this.B.state[0] = (r[0] + 1732584193) << 0;
+		this.B.state[1] = (r[1] - 271733879) << 0;
+		this.B.state[2] = (r[2] - 1732584194) << 0;
+		this.B.state[3] = (r[3] + 271733878) << 0;
 	},
 	md5cycleAdd: function(x, k, sw) {
 		var r = this.md5_rounds(x[0], x[1], x[2], x[3], k, false);
 
-		if(sw) {
-			this.B.state[0] = (r[0] + x[0]) << 0;
-			this.B.state[1] = (r[1] + x[1]) << 0;
-			this.B.state[2] = (r[2] + x[2]) << 0;
-			this.B.state[3] = (r[3] + x[3]) << 0;
-		}else{
+		if(!sw) {
 			return [
 				(r[0] + x[0]) << 0,
 				(r[1] + x[1]) << 0,
@@ -146,6 +141,11 @@ md5 = {
 				(r[3] + x[3]) << 0
 			];
 		}
+
+		this.B.state[0] = (r[0] + x[0]) << 0;
+		this.B.state[1] = (r[1] + x[1]) << 0;
+		this.B.state[2] = (r[2] + x[2]) << 0;
+		this.B.state[3] = (r[3] + x[3]) << 0;
 	},
 	md5_rounds: function(a, b, c, d, k, simple) {
 		if(simple) {
@@ -235,11 +235,11 @@ md5 = {
 
 		if(n > 63) {
 			for(i = 64;i <= n;i += 64) {
+				this.md5blk(s.substring(i - 64, i));
+
 				if(i == 64) {
-					this.md5blk(s.substring(0, 64));
 					this.md5cycle(this.B.md5blks, true);
 				}else{
-					this.md5blk(s.substring(i - 64, i));
 					this.md5cycleAdd(this.B.state, this.B.md5blks, true);
 				}
 			}
@@ -275,11 +275,7 @@ md5 = {
 
 		this.B.tail[14] = n * 8;
 
-		if(this.B.state[0] == 0) {
-			return this.md5cycle(this.B.tail, false);
-		}else{
-			return this.md5cycleAdd(this.B.state, this.B.tail, false);
-		}
+		return this.B.state[0] == 0 ? this.md5cycle(this.B.tail, false) : this.md5cycleAdd(this.B.state, this.B.tail, false);
 	},
 	md5blk: function(s) {
 		this.B.md5blks[0]  =  s.charCodeAt(0) +  (s.charCodeAt(1) << 8) +  (s.charCodeAt(2) << 16) +  (s.charCodeAt(3) << 24);
