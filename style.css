@@ -1,0 +1,57 @@
+body {
+	background: #ccc;
+	margin: 0px;
+	overflow: hidden;
+}
+
+button {
+	border: 1px solid #999;
+	color: #444;
+	padding: 2px;
+}
+
+button:hover {
+	background: #555;
+	border-color: #555;
+	color: #fff;
+}
+
+button:active {
+	border-color: #a3c4f4;
+}
+
+button.active {
+	background: #555;
+	border-color: #555;
+	color: #fff;
+}
+
+input {
+	border: 1px solid #999;
+	margin: 4px 0;
+	width: 300px;
+}
+
+#window {
+	background: #fff;
+	border: 1px solid #666;
+	box-shadow: 0 0 13px #555;
+	width: 400px;
+	height: 180px;
+	position: absolute;
+	left: 50%;
+	top: 100px;
+	margin-left: -200px;
+}
+
+#control {
+	background: #ddd;
+	border-bottom: 1px solid #bbb;
+	padding: 6px;
+}
+
+#result {
+	font-size: 16pt;
+	font-family: trebuchet ms;
+	margin-top: 25px;
+}
