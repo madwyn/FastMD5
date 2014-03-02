@@ -1,14 +1,10 @@
 ;md5 = window.md5 || (function(window) {
-	var $0 = 0, // a
-		$1 = 0, // b
-		$2 = 0, // c
-		$3 = 0, // d
-		$4 = [], // res
-		$5 = [], // tail
-		$6 = [], // md5blks
-		$7 = [128, 32768, 8388608, -2147483648], // c4
-		$8 = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"], // c16
-		$9 = [0, 8, 16, 24]; // cS
+	var $0 = [], // res
+		$1 = [], // tail
+		$2 = [], // md5blks
+		$3 = [128, 32768, 8388608, -2147483648], // c4
+		$4 = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"], // c16
+		$5 = [0, 8, 16, 24]; // cS
 
 	function encode(s, sLen) {
 		var utf = "", start = 0, end = 0;
@@ -48,13 +44,8 @@
 
 		if(sLen > 63) {
 			for(i = 64;i <= sLen;i += 64) {
-				if(i == 64) {
-					md5blk(s.substring(0, 64));
-					state = md5cycle($6[0], $6[1], $6[2], $6[3], $6[4], $6[5], $6[6], $6[7], $6[8], $6[9], $6[10], $6[11], $6[12], $6[13], $6[14], $6[15]);
-				}else{
-					md5blk(s.substring(i - 64, i));
-					state = md5cycleAdd(state, $6);
-				}
+				md5blk(s.substring(i - 64, i));
+				state = i == 64 ? md5cycle($2[0], $2[1], $2[2], $2[3], $2[4], $2[5], $2[6], $2[7], $2[8], $2[9], $2[10], $2[11], $2[12], $2[13], $2[14], $2[15]) : md5cycleAdd(state[0], state[1], state[2], state[3], $2[0], $2[1], $2[2], $2[3], $2[4], $2[5], $2[6], $2[7], $2[8], $2[9], $2[10], $2[11], $2[12], $2[13], $2[14], $2[15]);
 			}
 
 			s = s.substring(i - 64);
@@ -62,44 +53,30 @@
 		}
 
 		for(i = 0;i < N;++i) {
-			$5[i >> 2] |= s.charCodeAt(i) << $9[i % 4];
+			$1[i >> 2] |= s.charCodeAt(i) << $5[i % 4];
 		}
-		$5[i >> 2] |= $7[i % 4];
+		$1[i >> 2] |= $3[i % 4];
 
 		if(i > 55) {
-			state = md5cycleAdd(state, $5);
+			state = md5cycleAdd(1732584193, 4023233417, 2562383102, 271733878, $1[0], $1[1], $1[2], $1[3], $1[4], $1[5], $1[6], $1[7], $1[8], $1[9], $1[10], $1[11], $1[12], $1[13], $1[14], $1[15]);
 
 			var j = 16;
-			while(j--) $5[j] = 0;
+			while(j--) $1[j] = 0;
 		}
 
-		$5[14] = sLen * 8;
+		$1[14] = sLen * 8;
 
-		return typeof state == "boolean" ? md5cycle($5[0], $5[1], $5[2], $5[3], $5[4], $5[5], $5[6], $5[7], $5[8], $5[9], $5[10], $5[11], $5[12], $5[13], $5[14], $5[15]) : md5cycleAdd(state, $5);
+		return typeof state == "boolean" ? md5cycle($1[0], $1[1], $1[2], $1[3], $1[4], $1[5], $1[6], $1[7], $1[8], $1[9], $1[10], $1[11], $1[12], $1[13], $1[14], $1[15]) : md5cycleAdd(state[0], state[1], state[2], state[3], $1[0], $1[1], $1[2], $1[3], $1[4], $1[5], $1[6], $1[7], $1[8], $1[9], $1[10], $1[11], $1[12], $1[13], $1[14], $1[15]);
 	}
 
 	function md5blk(s) {
-		$6[0]  =  s.charCodeAt(0) +  (s.charCodeAt(1) << 8) +  (s.charCodeAt(2) << 16) +  (s.charCodeAt(3) << 24);
-		$6[1]  =  s.charCodeAt(4) +  (s.charCodeAt(5) << 8) +  (s.charCodeAt(6) << 16) +  (s.charCodeAt(7) << 24);
-		$6[2]  =  s.charCodeAt(8) +  (s.charCodeAt(9) << 8) + (s.charCodeAt(10) << 16) + (s.charCodeAt(11) << 24);
-		$6[3]  = s.charCodeAt(12) + (s.charCodeAt(13) << 8) + (s.charCodeAt(14) << 16) + (s.charCodeAt(15) << 24);
-		$6[4]  = s.charCodeAt(16) + (s.charCodeAt(17) << 8) + (s.charCodeAt(18) << 16) + (s.charCodeAt(19) << 24);
-		$6[5]  = s.charCodeAt(20) + (s.charCodeAt(21) << 8) + (s.charCodeAt(22) << 16) + (s.charCodeAt(23) << 24);
-		$6[6]  = s.charCodeAt(24) + (s.charCodeAt(25) << 8) + (s.charCodeAt(26) << 16) + (s.charCodeAt(27) << 24);
-		$6[7]  = s.charCodeAt(28) + (s.charCodeAt(29) << 8) + (s.charCodeAt(30) << 16) + (s.charCodeAt(31) << 24);
-		$6[8]  = s.charCodeAt(32) + (s.charCodeAt(33) << 8) + (s.charCodeAt(34) << 16) + (s.charCodeAt(35) << 24);
-		$6[9]  = s.charCodeAt(36) + (s.charCodeAt(37) << 8) + (s.charCodeAt(38) << 16) + (s.charCodeAt(39) << 24);
-		$6[10] = s.charCodeAt(40) + (s.charCodeAt(41) << 8) + (s.charCodeAt(42) << 16) + (s.charCodeAt(43) << 24);
-		$6[11] = s.charCodeAt(44) + (s.charCodeAt(45) << 8) + (s.charCodeAt(46) << 16) + (s.charCodeAt(47) << 24);
-		$6[12] = s.charCodeAt(48) + (s.charCodeAt(49) << 8) + (s.charCodeAt(50) << 16) + (s.charCodeAt(51) << 24);
-		$6[13] = s.charCodeAt(52) + (s.charCodeAt(53) << 8) + (s.charCodeAt(54) << 16) + (s.charCodeAt(55) << 24);
-		$6[14] = s.charCodeAt(56) + (s.charCodeAt(57) << 8) + (s.charCodeAt(58) << 16) + (s.charCodeAt(59) << 24);
-		$6[15] = s.charCodeAt(60) + (s.charCodeAt(61) << 8) + (s.charCodeAt(62) << 16) + (s.charCodeAt(63) << 24);
+		var i = 16;
+		while(i--) $2[i] = s.charCodeAt(i << 2) + (s.charCodeAt((i << 2) + 1) << 8) + (s.charCodeAt((i << 2) + 2) << 16) + (s.charCodeAt((i << 2) + 3) << 24);
 	}
 
 	function md5_main(s, enc, arr) {
 		var i = 16;
-		while(i--) $5[i] = 0; // fill tail with nulls
+		while(i--) $1[i] = 0; // fill tail with nulls
 
 		var sLen = s.length;
 		if(enc) {
@@ -108,43 +85,43 @@
 		}
 		s = md51(s, sLen);
 
-		var tmp = s[0];$4[1] = $8[tmp & 15];
-		tmp >>= 4;$4[0] = $8[tmp & 15];
-		tmp >>= 4;$4[3] = $8[tmp & 15];
-		tmp >>= 4;$4[2] = $8[tmp & 15];
-		tmp >>= 4;$4[5] = $8[tmp & 15];
-		tmp >>= 4;$4[4] = $8[tmp & 15];
-		tmp >>= 4;$4[7] = $8[tmp & 15];
-		tmp >>= 4;$4[6] = $8[tmp & 15];
+		var tmp = s[0];$0[1] = $4[tmp & 15];
+		tmp >>= 4;$0[0] = $4[tmp & 15];
+		tmp >>= 4;$0[3] = $4[tmp & 15];
+		tmp >>= 4;$0[2] = $4[tmp & 15];
+		tmp >>= 4;$0[5] = $4[tmp & 15];
+		tmp >>= 4;$0[4] = $4[tmp & 15];
+		tmp >>= 4;$0[7] = $4[tmp & 15];
+		tmp >>= 4;$0[6] = $4[tmp & 15];
 
-		tmp = s[1];$4[9] = $8[tmp & 15];
-		tmp >>= 4;$4[8] = $8[tmp & 15];
-		tmp >>= 4;$4[11] = $8[tmp & 15];
-		tmp >>= 4;$4[10] = $8[tmp & 15];
-		tmp >>= 4;$4[13] = $8[tmp & 15];
-		tmp >>= 4;$4[12] = $8[tmp & 15];
-		tmp >>= 4;$4[15] = $8[tmp & 15];
-		tmp >>= 4;$4[14] = $8[tmp & 15];
+		tmp = s[1];$0[9] = $4[tmp & 15];
+		tmp >>= 4;$0[8] = $4[tmp & 15];
+		tmp >>= 4;$0[11] = $4[tmp & 15];
+		tmp >>= 4;$0[10] = $4[tmp & 15];
+		tmp >>= 4;$0[13] = $4[tmp & 15];
+		tmp >>= 4;$0[12] = $4[tmp & 15];
+		tmp >>= 4;$0[15] = $4[tmp & 15];
+		tmp >>= 4;$0[14] = $4[tmp & 15];
 
-		tmp = s[2];$4[17] = $8[tmp & 15];
-		tmp >>= 4;$4[16] = $8[tmp & 15];
-		tmp >>= 4;$4[19] = $8[tmp & 15];
-		tmp >>= 4;$4[18] = $8[tmp & 15];
-		tmp >>= 4;$4[21] = $8[tmp & 15];
-		tmp >>= 4;$4[20] = $8[tmp & 15];
-		tmp >>= 4;$4[23] = $8[tmp & 15];
-		tmp >>= 4;$4[22] = $8[tmp & 15];
+		tmp = s[2];$0[17] = $4[tmp & 15];
+		tmp >>= 4;$0[16] = $4[tmp & 15];
+		tmp >>= 4;$0[19] = $4[tmp & 15];
+		tmp >>= 4;$0[18] = $4[tmp & 15];
+		tmp >>= 4;$0[21] = $4[tmp & 15];
+		tmp >>= 4;$0[20] = $4[tmp & 15];
+		tmp >>= 4;$0[23] = $4[tmp & 15];
+		tmp >>= 4;$0[22] = $4[tmp & 15];
 
-		tmp = s[3];$4[25] = $8[tmp & 15];
-		tmp >>= 4;$4[24] = $8[tmp & 15];
-		tmp >>= 4;$4[27] = $8[tmp & 15];
-		tmp >>= 4;$4[26] = $8[tmp & 15];
-		tmp >>= 4;$4[29] = $8[tmp & 15];
-		tmp >>= 4;$4[28] = $8[tmp & 15];
-		tmp >>= 4;$4[31] = $8[tmp & 15];
-		tmp >>= 4;$4[30] = $8[tmp & 15];
+		tmp = s[3];$0[25] = $4[tmp & 15];
+		tmp >>= 4;$0[24] = $4[tmp & 15];
+		tmp >>= 4;$0[27] = $4[tmp & 15];
+		tmp >>= 4;$0[26] = $4[tmp & 15];
+		tmp >>= 4;$0[29] = $4[tmp & 15];
+		tmp >>= 4;$0[28] = $4[tmp & 15];
+		tmp >>= 4;$0[31] = $4[tmp & 15];
+		tmp >>= 4;$0[30] = $4[tmp & 15];
 
-		return arr ? $4 : $4[0] + $4[1] + $4[2] + $4[3] + $4[4] + $4[5] + $4[6] + $4[7] + $4[8] + $4[9] + $4[10] + $4[11] + $4[12] + $4[13] + $4[14] + $4[15] + $4[16] + $4[17] + $4[18] + $4[19] + $4[20] + $4[21] + $4[22] + $4[23] + $4[24] + $4[25] + $4[26] + $4[27] + $4[28] + $4[29] + $4[30] + $4[31];
+		return arr ? $0 : $0[0] + $0[1] + $0[2] + $0[3] + $0[4] + $0[5] + $0[6] + $0[7] + $0[8] + $0[9] + $0[10] + $0[11] + $0[12] + $0[13] + $0[14] + $0[15] + $0[16] + $0[17] + $0[18] + $0[19] + $0[20] + $0[21] + $0[22] + $0[23] + $0[24] + $0[25] + $0[26] + $0[27] + $0[28] + $0[29] + $0[30] + $0[31];
 	}
 
 	var md5_asmjs = (function(stdlib, env, heap) {
