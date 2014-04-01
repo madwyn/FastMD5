@@ -72,7 +72,10 @@
 
 	function md5blk(s) {
 		var i = 16;
-		while(i--) $2[i] = s.charCodeAt(i << 2) + (s.charCodeAt((i << 2) + 1) << 8) + (s.charCodeAt((i << 2) + 2) << 16) + (s.charCodeAt((i << 2) + 3) << 24);
+		while(i--) {
+			var I = i << 2;
+			$2[i] = s.charCodeAt(I) + (s.charCodeAt(I + 1) << 8) + (s.charCodeAt(I + 2) << 16) + (s.charCodeAt(I + 3) << 24);
+		}
 	}
 
 	function md5_main(s, enc, arr) {
