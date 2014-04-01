@@ -7,12 +7,11 @@
 		$5 = [0, 8, 16, 24]; // cS
 
 	function encode(s, sLen) {
-		var utf = "", start = 0, end = 0;
-		s += "";
+		var utf = "", start = end = 0;
 
 		for(var i = 0;i < sLen;i++) {
-			var c1 = s.charCodeAt(i);
-			var enc = null;
+			var c1 = s.charCodeAt(i),
+				enc = null;
 
 			if(c1 < 128) {
 				end++;
@@ -21,7 +20,7 @@
 			}else{
 				enc = String.fromCharCode((c1 >> 12) | 224, ((c1 >> 6) & 63) | 128, (c1 & 63) | 128);
 			}
-			if(enc !== null) {
+			if(enc != null) {
 				if(end > start) {
 					utf += s.slice(start, end);
 				}
@@ -41,6 +40,8 @@
 		var state = false,
 			N = sLen,
 			i;
+
+		s += "";
 
 		if(sLen > 63) {
 			for(i = 64;i <= sLen;i += 64) {
@@ -76,7 +77,7 @@
 
 	function md5_main(s, enc, arr) {
 		var i = 16;
-		while(i--) $1[i] = 0; // fill tail with nulls
+		while(i--) $1[i] = 0;
 
 		var sLen = s.length;
 		if(enc) {
@@ -317,10 +318,10 @@
 			md5cycle: md5cycle,
 			md5cycleAdd: md5cycleAdd
 		};
-	})(window, null, new ArrayBuffer(4096));
+	})(window, null, new ArrayBuffer(16));
 
-	var md5cycle = md5_asmjs.md5cycle;
-	var md5cycleAdd = md5_asmjs.md5cycleAdd;
+	var md5cycle = md5_asmjs.md5cycle,
+		md5cycleAdd = md5_asmjs.md5cycleAdd;
 
 	return md5_main;
 })(window);
