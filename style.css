@@ -1,41 +1,43 @@
 body {
-	background: #ccc;
+	background: #2d2d30;
+	cursor: default;
 	margin: 0px;
 	overflow: hidden;
 }
 
 button {
-	border: 1px solid #999;
-	color: #444;
+	background: #333337;
+	border: 0px;
+	color: #fff;
 	padding: 2px;
 }
 
 button:hover {
-	background: #555;
-	border-color: #555;
-	color: #fff;
+	background: #3f3f46;
 }
 
 button:active {
-	border-color: #a3c4f4;
+	background: #007acc;
 }
 
 button.active {
-	background: #555;
-	border-color: #555;
-	color: #fff;
+	background: #007acc;
 }
 
 input {
-	border: 1px solid #999;
+	background: #333337;
+	color: #fff;
+
+	border: 0px;
 	margin: 4px 0;
+	margin-top: 12px;
 	width: 300px;
 }
 
 #window {
-	background: #fff;
-	border: 1px solid #666;
-	box-shadow: 0 0 13px #555;
+	background: #252526;
+	border: 1px solid #3f3f46;
+
 	width: 400px;
 	height: 180px;
 	position: absolute;
@@ -45,13 +47,13 @@ input {
 }
 
 #control {
-	background: #ddd;
-	border-bottom: 1px solid #bbb;
+	background: #1b1b1c;
 	padding: 6px;
 }
 
 #result {
-	font-size: 16pt;
+	color: #fff;
 	font-family: trebuchet ms;
+	font-size: 16pt;
 	margin-top: 25px;
 }
