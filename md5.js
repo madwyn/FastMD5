@@ -1,6 +1,6 @@
 ;md5 = window.md5 || (function(window) {
 	var $0 = [], // res
-		$1 = [], // tail
+		$1 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // tail
 		$2 = [], // md5blks
 		$3 = [128, 32768, 8388608, -2147483648], // c4
 		$4 = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"], // c16
@@ -53,8 +53,18 @@
 			N = s.length;
 		}
 
+		for(i = ~~(N / 4);i < 16;i++) {
+			$1[i] = 0;
+		}
+
 		for(i = 0;i < N;i++) {
-			$1[i >> 2] |= s.charCodeAt(i) << $5[i % 4];
+			var I = i % 4;
+			if(I == 0) {
+				$1[i >> 2] = s.charCodeAt(i) << $5[I];
+				continue;
+			}
+
+			$1[i >> 2] |= s.charCodeAt(i) << $5[I];
 		}
 		$1[i >> 2] |= $3[i % 4];
 
@@ -76,10 +86,6 @@
 	}
 
 	function md5_main(s, enc, arr) {
-		// todo: try to remove this cycle
-		var i = 16;
-		while(i--) $1[i] = 0;
-
 		var sLen = s.length;
 		if(enc) {
 			s = encode(s, sLen);
@@ -126,10 +132,10 @@
 		return arr ? $0 : $0[0] + $0[1] + $0[2] + $0[3] + $0[4] + $0[5] + $0[6] + $0[7] + $0[8] + $0[9] + $0[10] + $0[11] + $0[12] + $0[13] + $0[14] + $0[15] + $0[16] + $0[17] + $0[18] + $0[19] + $0[20] + $0[21] + $0[22] + $0[23] + $0[24] + $0[25] + $0[26] + $0[27] + $0[28] + $0[29] + $0[30] + $0[31];
 	}
 
-	var md5_asmjs = (function(stdlib, env, heap) {
+	var md5_asmjs = (function(std, env, buf) {
 		"use asm";
 
-		var TA = new stdlib.Int32Array(heap);
+		var TA = new std.Int32Array(buf);
 
 		function R(q, a, b, x, s1, s2, t) {
 			q = q|0;
@@ -311,8 +317,6 @@
 			TA[1] = b|0;
 			TA[2] = c|0;
 			TA[3] = d|0;
-
-			return TA;
 		}
 
 		return {
