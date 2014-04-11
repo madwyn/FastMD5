@@ -11,32 +11,36 @@
 				<button class="active">FastMD5</button>
 				<button onclick="another()">jkm MD5</button>
 				<center style="margin-top:10px">
-					<button onclick="hash1()">run 1 000 000 hashes</button>
+					<button onclick="millionHashes()">run 1 000 000 hashes</button>
 					<input id="input">
-					<button onclick="hash2()">Hash this!</button>
+					<button onclick="hash()">Hash this!</button>
 				</center>
 			</div>
-			<center><div id="result"></div></center>
+			<center><div id="result">
+				<noscript>Enable JavaScript first!</noscript>
+			</div></center>
 		</div>
 		<script type="text/javascript">
-		var resultElem = document.getElementById("result");
-		var inputElem = document.getElementById("input");
+		var resultElem = document.getElementById("result"),
+			inputElem = document.getElementById("input");
 
 		function another() {
 			window.location.href = "md5jkm.htm";
 		}
+
 		function result(r) {
 			resultElem.innerHTML = r;
 		}
-		function hash1() {
-			var timeStart = new Date().getTime();
+
+		function millionHashes() {
+			var timeStart = performance.now();
 			for(var i = 0;i < 1000000;i++) {
 				md5(i + "", false, true);
 			}
-			var timeEnd = new Date().getTime();
-			result(timeEnd - timeStart + "ms");
+			result(performance.now() - timeStart + "ms");
 		}
-		function hash2() {
+
+		function hash() {
 			result(md5(inputElem.value, true, false));
 		}
 		</script>
