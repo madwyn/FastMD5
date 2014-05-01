@@ -37,7 +37,7 @@
 	}
 
 	function md51(s, sLen) {
-		var state = false,
+		var state,
 			N = sLen,
 			i;
 
