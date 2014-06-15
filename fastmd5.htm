@@ -34,14 +34,12 @@
 
 		function millionHashes() {
 			var timeStart = performance.now();
-			for(var i = 0;i < 1000000;i++) {
-				md5(i + "", false, true);
-			}
+			for(var i = 0;i < 1000000;i++) md5(i + "", true);
 			result(performance.now() - timeStart + "ms");
 		}
 
 		function hash() {
-			result(md5(inputElem.value, true, false));
+			result(md5(inputElem.value, false, true));
 		}
 		</script>
 	</body>
