@@ -1,6 +1,6 @@
 ;md5 = window.md5 || (function(window) {
 	var $0 = [], // res
-		$1 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // tail
+		$1 = new Int32Array(16), // tail
 		$2 = [], // md5blks
 		$3 = [128, 32768, 8388608, -2147483648], // c4
 		$4 = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"], // c16
@@ -13,25 +13,23 @@
 			var c1 = s.charCodeAt(i),
 				enc = null;
 
-			if(c1 < 128) {
+			if(c1 < 128)
 				end++;
-			}else if(c1 > 127 && c1 < 2048) {
+			else if(c1 > 127 && c1 < 2048)
 				enc = String.fromCharCode((c1 >> 6) | 192, (c1 & 63) | 128);
-			}else{
+			else
 				enc = String.fromCharCode((c1 >> 12) | 224, ((c1 >> 6) & 63) | 128, (c1 & 63) | 128);
-			}
+
 			if(enc != null) {
-				if(end > start) {
+				if(end > start)
 					utf += s.slice(start, end);
-				}
 				utf += enc;
 				start = end = i + 1;
 			}
 		}
 
-		if(end > start) {
+		if(end > start)
 			utf += s.slice(start, sLen);
-		}
 
 		return utf;
 	}
@@ -56,18 +54,14 @@
 			N = s.length;
 		}
 
-		for(i = ~~(N / 4);i < 16;i++) {
-			$1[i] = 0;
-		}
+		for(i = ~~(N / 4);i < 16;i++) $1[i] = 0;
 
 		for(i = 0;i < N;i++) {
 			var I = i % 4;
-			if(I == 0) {
+			if(I == 0)
 				$1[i >> 2] = s.charCodeAt(i) << $5[I];
-				continue;
-			}
-
-			$1[i >> 2] |= s.charCodeAt(i) << $5[I];
+			else
+				$1[i >> 2] |= s.charCodeAt(i) << $5[I];
 		}
 		$1[i >> 2] |= $3[i % 4];
 
@@ -81,22 +75,21 @@
 	}
 
 	function md5blk(s) {
-		var i = 16;
-		while(i--) {
+		for(var i = 16;i--;) {
 			var I = i << 2;
 			$2[i] = s.charCodeAt(I) + (s.charCodeAt(I + 1) << 8) + (s.charCodeAt(I + 2) << 16) + (s.charCodeAt(I + 3) << 24);
 		}
 	}
 
-	function md5_main(s, enc, arr) {
+	function md5_main(s, arr, enc) {
 		var sLen = s.length;
 		if(enc) {
 			s = encode(s, sLen);
 			sLen = s.length;
 		}
-		s = md51(s, sLen);
+		var result = md51(s, sLen);
 
-		var tmp = s[0];$0[1] = $4[tmp & 15];
+		var tmp = result[0];$0[1] = $4[tmp & 15];
 		tmp >>= 4;$0[0] = $4[tmp & 15];
 		tmp >>= 4;$0[3] = $4[tmp & 15];
 		tmp >>= 4;$0[2] = $4[tmp & 15];
@@ -105,7 +98,7 @@
 		tmp >>= 4;$0[7] = $4[tmp & 15];
 		tmp >>= 4;$0[6] = $4[tmp & 15];
 
-		tmp = s[1];$0[9] = $4[tmp & 15];
+		tmp = result[1];$0[9] = $4[tmp & 15];
 		tmp >>= 4;$0[8] = $4[tmp & 15];
 		tmp >>= 4;$0[11] = $4[tmp & 15];
 		tmp >>= 4;$0[10] = $4[tmp & 15];
@@ -114,7 +107,7 @@
 		tmp >>= 4;$0[15] = $4[tmp & 15];
 		tmp >>= 4;$0[14] = $4[tmp & 15];
 
-		tmp = s[2];$0[17] = $4[tmp & 15];
+		tmp = result[2];$0[17] = $4[tmp & 15];
 		tmp >>= 4;$0[16] = $4[tmp & 15];
 		tmp >>= 4;$0[19] = $4[tmp & 15];
 		tmp >>= 4;$0[18] = $4[tmp & 15];
@@ -123,7 +116,7 @@
 		tmp >>= 4;$0[23] = $4[tmp & 15];
 		tmp >>= 4;$0[22] = $4[tmp & 15];
 
-		tmp = s[3];$0[25] = $4[tmp & 15];
+		tmp = result[3];$0[25] = $4[tmp & 15];
 		tmp >>= 4;$0[24] = $4[tmp & 15];
 		tmp >>= 4;$0[27] = $4[tmp & 15];
 		tmp >>= 4;$0[26] = $4[tmp & 15];
@@ -132,7 +125,7 @@
 		tmp >>= 4;$0[31] = $4[tmp & 15];
 		tmp >>= 4;$0[30] = $4[tmp & 15];
 
-		return arr ? $0 : $0[0] + $0[1] + $0[2] + $0[3] + $0[4] + $0[5] + $0[6] + $0[7] + $0[8] + $0[9] + $0[10] + $0[11] + $0[12] + $0[13] + $0[14] + $0[15] + $0[16] + $0[17] + $0[18] + $0[19] + $0[20] + $0[21] + $0[22] + $0[23] + $0[24] + $0[25] + $0[26] + $0[27] + $0[28] + $0[29] + $0[30] + $0[31];
+		return arr ? $0 : $0.join("");
 	}
 
 	var md5_asmjs = (function(std, env, buf) {
@@ -141,37 +134,12 @@
 		var TA = new std.Int32Array(buf);
 
 		function R(q, a, b, x, s1, s2, t) {
-			q = q|0;
-			a = a|0;
-			b = b|0;
-			x = x|0;
-			s1 = s1|0;
-			s2 = s2|0;
-			t = t|0;
-
-			a = a + q + x + t;
+			a += q + x + t;
 			return ((a << s1 | a >>> s2) + b) << 0;
 		}
 
 		function md5cycle(k0, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15) {
-			k0 = k0|0;
-			k1 = k1|0;
-			k2 = k2|0;
-			k3 = k3|0;
-			k4 = k4|0;
-			k5 = k5|0;
-			k6 = k6|0;
-			k7 = k7|0;
-			k8 = k8|0;
-			k9 = k9|0;
-			k10 = k10|0;
-			k11 = k11|0;
-			k12 = k12|0;
-			k13 = k13|0;
-			k14 = k14|0;
-			k15 = k15|0;
-
-			md5_rounds(1732584193, -271733879, -1732584194, 271733878, k0, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15, 1);
+			md5_rounds(0, 0, 0, 0, k0, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15, 1);
 
 			TA[0] = (TA[0] + 1732584193) << 0;
 			TA[1] = (TA[1] - 271733879) << 0;
@@ -182,27 +150,6 @@
 		}
 
 		function md5cycleAdd(x0, x1, x2, x3, k0, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15) {
-			x0 = x0|0;
-			x1 = x1|0;
-			x2 = x2|0;
-			x3 = x3|0;
-			k0 = k0|0;
-			k1 = k1|0;
-			k2 = k2|0;
-			k3 = k3|0;
-			k4 = k4|0;
-			k5 = k5|0;
-			k6 = k6|0;
-			k7 = k7|0;
-			k8 = k8|0;
-			k9 = k9|0;
-			k10 = k10|0;
-			k11 = k11|0;
-			k12 = k12|0;
-			k13 = k13|0;
-			k14 = k14|0;
-			k15 = k15|0;
-
 			md5_rounds(x0, x1, x2, x3, k0, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15, 0);
 
 			TA[0] = (TA[0] + x0) << 0;
@@ -214,31 +161,9 @@
 		}
 
 		function md5_rounds(a, b, c, d, k0, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15, simple) {
-			a = a|0;
-			b = b|0;
-			c = c|0;
-			d = d|0;
-			k0 = k0|0;
-			k1 = k1|0;
-			k2 = k2|0;
-			k3 = k3|0;
-			k4 = k4|0;
-			k5 = k5|0;
-			k6 = k6|0;
-			k7 = k7|0;
-			k8 = k8|0;
-			k9 = k9|0;
-			k10 = k10|0;
-			k11 = k11|0;
-			k12 = k12|0;
-			k13 = k13|0;
-			k14 = k14|0;
-			k15 = k15|0;
-			simple = simple|0;
-			var bc = bc|0;
-			var da = da|0;
+			var bc, da;
 
-			if(simple == 1|0) {
+			if(simple == 1) {
 				a = k0 - 680876937;
 				a = ((a << 7 | a >>> 25) - 271733879) << 0;
 				d = k1 - 117830708 + ((2004318071 & a) ^ -1732584194);
