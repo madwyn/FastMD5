@@ -66,13 +66,17 @@
 		$1[i >> 2] |= $3[i % 4];
 
 		if(i > 55) {
-			state = md5cycle($1);
-
-			return md5cycleAdd(state, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, sLen * 8, 0]);
+			if(state === undefined)
+				state = md5cycle($1);
+			else
+				state = md5cycleAdd(state, $1);
+			for(j = 0;j < 16;j++) $1[j] = 0;
+			//return md5cycleAdd(md5cycle($1), [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, sLen * 8, 0]);
 		}
+
 		$1[14] = sLen * 8;
 
-		return !state ? md5cycle($1) : md5cycleAdd(state, $1);
+		return state ? md5cycleAdd(state, $1) : md5cycle($1);
 	}
 
 	function getBlocks(s) {
@@ -142,23 +146,23 @@
 		function md5cycle(k) {
 			md5_rounds(0, 0, 0, 0, k, 1);
 
-			TA[0] = (TA[0] + 1732584193) << 0;
-			TA[1] = (TA[1] - 271733879) << 0;
-			TA[2] = (TA[2] - 1732584194) << 0;
-			TA[3] = (TA[3] + 271733878) << 0;
-
-			return TA;
+			return [
+				(TA[0] + 1732584193) << 0,
+				(TA[1] - 271733879) << 0,
+				(TA[2] - 1732584194) << 0,
+				(TA[3] + 271733878) << 0
+			];
 		}
 
 		function md5cycleAdd(x, k) {
 			md5_rounds(x[0], x[1], x[2], x[3], k, 0);
 
-			TA[0] = (TA[0] + x[0]) << 0;
-			TA[1] = (TA[1] + x[1]) << 0;
-			TA[2] = (TA[2] + x[2]) << 0;
-			TA[3] = (TA[3] + x[3]) << 0;
-
-			return TA;
+			return [
+				(TA[0] + x[0]) << 0,
+				(TA[1] + x[1]) << 0,
+				(TA[2] + x[2]) << 0,
+				(TA[3] + x[3]) << 0
+			];
 		}
 
 		function md5_rounds(a, b, c, d, k, simple) {
