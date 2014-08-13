@@ -2,45 +2,65 @@
 #33a8e5 - blue
 #999 - headers
 #666 - links
+#600 - error
+#060 - ok
 */
 
+.visible {
+	display: block!important;
+}
+
 * {
+	cursor: default;
+
+	box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
-	box-sizing: border-box;
 
+	user-select: none;
 	-khtml-user-select: none;
 	-moz-user-select: none;
-	user-select: none;
 
 	text-shadow: 1px 1px 0px #000;
 }
 
+::-moz-selection {
+	background: transparent;
+}
+
+::selection {
+	background: transparent;
+}
+
 body {
 	background: #2d2d30;
+	color: #fff;
 	font-family: calibri;
-	cursor: default;
+
 	margin: 0px;
+	padding: 0px;
+
 	overflow: hidden;
 }
 
 input {
 	background: #333337;
-	color: #fff;
-
 	border: none;
+
+	width: 300px;
+
 	margin: 4px 0;
 	margin-top: 12px;
-	width: 300px;
 }
 
 .button-1 {
 	background: #252526;
 	border: none;
-	color: #fff;
-	padding: 2px;
-	width: 100px;
 	text-align: center;
+
+	width: 100px;
+
+	padding: 2px;
 }
 
 .button-1:hover {
@@ -63,12 +83,12 @@ input {
 
 	margin: 0 auto;
 
-	-webkit-border-bottom-right-radius: 5px;
-	-webkit-border-bottom-left-radius: 5px;
-	-moz-border-radius-bottomright: 5px;
-	-moz-border-radius-bottomleft: 5px;
-	border-bottom-right-radius: 5px;
 	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+	-webkit-border-bottom-left-radius: 5px;
+	-webkit-border-bottom-right-radius: 5px;
+	-moz-border-radius-bottomleft: 5px;
+	-moz-border-radius-bottomright: 5px;
 }
 
 #menu {
@@ -78,45 +98,39 @@ input {
 	height: 30px;
 }
 
-#menu > div {
+#menu div {
 	background: #252526;
 	color: #999;
+
+	float: left;
 
 	width: 100px;
 	height: 100%;
 
-	float: left;
-
 	padding: 2px 6px;
 }
 
-#menu > div:hover {
+#menu div:hover {
 	background: #3f3f46;
 	color: #eee;
 }
 
-#menu > div:active {
-	background: #007acc;
-	color: #fff;
-}
-
-#menu > div.active {
+#menu div:active, #menu div.active {
 	background: #007acc;
 	color: #fff;
 }
 
 #menu > div:after {
 	content: attr(count);
-
 	font-weight: bold;
 
 	float: right;
 }
 
 #loading {
-	color: #fff;
-	padding: 20px;
 	text-align: center;
+
+	padding: 20px;
 }
 
 #content {
@@ -127,34 +141,33 @@ input {
 .info {
 	background: #303031;
 	border: 1px solid #007acc;
-	color: #fff;
-
-	padding: 10px;
-	margin-bottom: 15px;
 
 	position: relative;
+
+	margin-bottom: 15px;
+	padding: 10px;
 }
 
-.info > .close {
+.close {
 	background-color: #303031;
 	background-image: url("img/close.png");
 
 	width: 24px;
 	height: 24px;
 
-	opacity: 0.75;
-
 	position: absolute;
 	top: 0px;
 	right: 0px;
+
+	opacity: 0.75;
 }
 
-.info > .close:hover {
+.close:hover {
 	background-color: #29292a;
 	opacity: 1;
 }
 
-.info > .close:active {
+.close:active {
 	background-color: #252526;
 }
 
@@ -163,18 +176,19 @@ input {
 	transition: all 0.1s;
 }
 
-#menu > div {
+#menu div {
 	transition: all 0.1s;
 }
 
-.info > .close {
+.close {
 	transition: all 0.1s;
 }
+
+/* tests table */
 
 table {
 	background: #303031;
 	border: 1px solid #007acc;
-	color: #fff;
 
 	width: 100%;
 }
@@ -196,38 +210,12 @@ table tr.ok td {
 
 table tr td {
 	border-bottom: 1px solid #444;
-
 	text-align: center;
+
 	padding: 10px;
 }
 
 table tr td:nth-child(1) {
 	color: #aaa;
 	text-align: left;
-}
-
-/* old */
-
-#window {
-	background: #252526;
-	border: 1px solid #3f3f46;
-
-	width: 400px;
-	height: 180px;
-	position: absolute;
-	left: 50%;
-	top: 100px;
-	margin-left: -200px;
-}
-
-#control {
-	background: #1b1b1c;
-	padding: 6px;
-}
-
-#result {
-	color: #fff;
-	font-family: trebuchet ms;
-	font-size: 16pt;
-	margin-top: 25px;
 }

@@ -1,22 +1,23 @@
 (function() {
 	var d = document;
 
-	var loading = d.getElementById("loading");
-	var content = d.getElementById("content");
-	var content_tests = d.getElementById("content-tests");
-	var content_tests_table = d.getElementById("content-tests-table");
-	var info_tests = d.getElementById("info-tests");
-	var run_tests = d.getElementById("run-tests");
-	var testsRunning = false;
-	var currentTest = 0;
+	var win = d.getElementById("win"),
+		loading = d.getElementById("loading"),
+		content = d.getElementById("content"),
+		content_tests = d.getElementById("content-tests"),
+		content_tests_table = d.getElementById("content-tests-table"),
+		info_tests = d.getElementById("info-tests"),
+		run_tests = d.getElementById("run-tests"),
+		testsRunning = false,
+		completeTests = 0;
 
 	// loading
-	
+
 	var loadingInterval = setInterval(function() {
 		if(typeof md5 === "function") {
 			clearInterval(loadingInterval);
-			content.style.display = "block";
-			loading.style.display = "none";
+			content.className = "visible";
+			win.removeChild(loading);
 		}
 	}, 10);
 
@@ -24,17 +25,14 @@
 
 	var tests = [
 		{
-			name: "MD5 hash strings: length 0 to 100",
+			name: "MD5 hash strings: length 0 to 1000",
 			func: function() {
 				var string = "";
 
-				for(var i = 0;i < 100;i++) {
-					if(md5(string) === md5jkm(string)) {
-						string += "1";
-						currentTest++;
-					}else{
-						return false;
-					}
+				for(var i = 0;i < 1000;i++) {
+					if(md5(string) !== md5jkm(string)) return false;
+
+					string += "a";
 				}
 
 				return true;
@@ -44,25 +42,25 @@
 
 	function initTests() {
 		for(var i = 0, j = tests.length;i < j;i++) {
-			var testTR = d.createElement("tr");
-			var nameTD = d.createElement("td");
-			var stateTD = d.createElement("td");
-			testTR.id = "test-" + i;
-			nameTD.id = "test-name-" + i;
-			stateTD.id = "test-state-" + i;
+			var tr = d.createElement("tr"),
+				name = d.createElement("td"),
+				state = d.createElement("td");
 
-			nameTD.innerHTML = tests[i].name;
-			stateTD.innerHTML = "?";
+			tr.id = "test-" + i;
+			name.id = "test-name-" + i;
+			state.id = "test-state-" + i;
 
-			testTR.appendChild(nameTD);
-			testTR.appendChild(stateTD);
-			content_tests_table.appendChild(testTR);
+			name.innerHTML = tests[i].name;
+			state.innerHTML = "?";
+
+			tr.appendChild(name);
+			tr.appendChild(state);
+			content_tests_table.appendChild(tr);
 		}
 
 		run_tests.onclick = runTests;
 	}
 
-	var testsRunning = false;
 	function runTests() {
 		if(testsRunning) return;
 		testsRunning = true;
@@ -72,24 +70,27 @@
 		run_tests.className = "button-1 active";
 		run_tests.innerHTML = "Running...";
 
-		for(var i = 0, j = tests.length;i < j;i++) {
+		for(var i = 0, j = tests.length;i < j;i++)
 			runTest(i);
-		}
 	}
 
 	function runTest(i) {
 		setTimeout(function() {
-			var correct = tests[i].func();
+			var tr = document.getElementById("test-" + i),
+				state = document.getElementById("test-state-" + i),
+				correct = tests[i].func();
+
 			if(!correct) {
-				document.getElementById("test-" + i).className = "error";
-				document.getElementById("test-state-" + i).innerHTML = "ERROR";
+				tr.className = "error";
+				state.innerHTML = "ERROR";
 				run_tests.innerHTML = "ERROR";
 				return;
 			}else{
-				document.getElementById("test-" + i).className = "ok";
-				document.getElementById("test-state-" + i).innerHTML = "OK";
+				tr.className = "ok";
+				state.innerHTML = "OK";
+				completeTests++;
 
-				if(i == tests.length - 1) {
+				if(completeTests == tests.length) {
 					run_tests.className = "button-1";
 					run_tests.innerHTML = "Run Tests";
 					testsRunning = false;
@@ -99,6 +100,7 @@
 	}
 
 	function clearTests() {
+		completeTests = 0;
 		for(var i = 0, j = tests.length;i < j;i++) {
 			document.getElementById("test-" + i).className = "";
 			document.getElementById("test-state-" + i).innerHTML = "?";
