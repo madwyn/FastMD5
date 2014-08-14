@@ -66,12 +66,9 @@
 		$1[i >> 2] |= $3[i % 4];
 
 		if(i > 55) {
-			if(state === undefined)
-				state = md5cycle($1);
-			else
-				state = md5cycleAdd(state, $1);
-			for(j = 0;j < 16;j++) $1[j] = 0;
-			//return md5cycleAdd(md5cycle($1), [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, sLen * 8, 0]);
+			state = !state ? md5cycle($1) : md5cycleAdd(state, $1);
+
+			return md5cycleAdd(state, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, sLen * 8, 0]);
 		}
 
 		$1[14] = sLen * 8;
