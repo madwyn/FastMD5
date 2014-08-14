@@ -58,7 +58,7 @@
 
 		for(i = 0;i < N;i++) {
 			I = i % 4;
-			if(I == 0)
+			if(I === 0)
 				$1[i >> 2] = s.charCodeAt(i) << $5[I];
 			else
 				$1[i >> 2] |= s.charCodeAt(i) << $5[I];
@@ -165,7 +165,7 @@
 		function md5_rounds(a, b, c, d, k, simple) {
 			var bc, da;
 
-			if(simple == 1) {
+			if(simple === 1) {
 				a = k[0] - 680876937;
 				a = ((a << 7 | a >>> 25) - 271733879) << 0;
 				d = k[1] - 117830708 + ((2004318071 & a) ^ -1732584194);
