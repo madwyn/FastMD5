@@ -1,4 +1,4 @@
-;md5 = window.md5 || (function(window) {
+;(function(g) {
 	var $0 = [], // res
 		$1 = new Int32Array(16), // tail
 		$2 = new Int32Array(16), // blocks
@@ -41,11 +41,11 @@
 
 		s += "";
 
-		if(sLen > 63) {
+		if(N > 63) {
 			getBlocks(s.substring(0, 64));
 			state = md5cycle($2);
 
-			for(i = 128;i <= sLen;i += 64) {
+			for(i = 128;i <= N;i += 64) {
 				getBlocks(s.substring(i - 64, i));
 				state = md5cycleAdd(state, $2);
 			}
@@ -263,10 +263,10 @@
 			md5cycle: md5cycle,
 			md5cycleAdd: md5cycleAdd
 		};
-	})(window, null, new ArrayBuffer(16));
+	})(g, null, new ArrayBuffer(16));
 
 	var md5cycle = md5_asmjs.md5cycle,
 		md5cycleAdd = md5_asmjs.md5cycleAdd;
 
-	return md5_main;
-})(window);
+	g.md5 = g.md5 || md5_main;
+})(window || global);
