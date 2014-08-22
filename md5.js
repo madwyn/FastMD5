@@ -2,9 +2,21 @@
 	var $0 = [], // res
 		$1 = new Int32Array(16), // tail
 		$2 = new Int32Array(16), // blocks
-		$3 = [128, 32768, 8388608, -2147483648], // c4
+		$3 = new Int32Array(4), // c4
 		$4 = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"], // c16
-		$5 = [0, 8, 16, 24]; // cS
+		$5 = new Int32Array(4); // cS
+
+	// fill c4
+	$3[0] = 128;
+	$3[1] = 32768;
+	$3[2] = 8388608;
+	$3[3] = -2147483648;
+
+	// fill c16
+	$5[0] = 0;
+	$5[1] = 8;
+	$5[2] = 16;
+	$5[3] = 24;
 
 	function encode(s, sLen) {
 		var utf = "", start = end = 0;
@@ -131,7 +143,7 @@
 	}
 
 	var md5_asmjs = (function(std, env, buf) {
-		"use asm";
+		//"use asm";
 
 		var TA = new std.Int32Array(buf);
 
