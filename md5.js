@@ -18,12 +18,12 @@
 	$5[2] = 16;
 	$5[3] = 24;
 
-	function encode(s, sLen) {
+	function encode(s) {
 		var utf = "", start = end = 0;
 
-		for(var i = 0;i < sLen;i++) {
+		for(var i = 0, j = s.length;i < j;i++) {
 			var c1 = s.charCodeAt(i),
-				enc = null;
+				enc = "";
 
 			if(c1 < 128)
 				end++;
@@ -32,7 +32,7 @@
 			else
 				enc = String.fromCharCode((c1 >> 12) | 224, ((c1 >> 6) & 63) | 128, (c1 & 63) | 128);
 
-			if(enc != null) {
+			if(enc !== "") {
 				if(end > start)
 					utf += s.slice(start, end);
 				utf += enc;
@@ -41,13 +41,14 @@
 		}
 
 		if(end > start)
-			utf += s.slice(start, sLen);
+			utf += s.slice(start, j);
 
 		return utf;
 	}
 
-	function md51(s, sLen) {
+	function md51(s) {
 		var state,
+			sLen = s.length,
 			N = sLen,
 			i, I;
 
@@ -96,12 +97,7 @@
 	}
 
 	function md5_main(s, arr, enc) {
-		var sLen = s.length;
-		if(enc) {
-			s = encode(s, sLen);
-			sLen = s.length;
-		}
-		var result = md51(s, sLen);
+		var result = md51(enc ? encode(s) : s);
 
 		var tmp = result[0];$0[1] = $4[tmp & 15];
 		tmp >>= 4;$0[0] = $4[tmp & 15];
