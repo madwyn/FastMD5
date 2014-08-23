@@ -7,21 +7,22 @@
 		content_tests = d.getElementById("content-tests"),
 		content_tests_table = d.getElementById("content-tests-table"),
 		info_tests = d.getElementById("info-tests"),
-		run_tests = d.getElementById("run-tests"),
-		testsRunning = false,
-		completeTests = 0;
+		run_tests = d.getElementById("run-tests");
 
 	// loading
 
 	var loadingInterval = setInterval(function() {
-		if(typeof md5 === "function") {
-			clearInterval(loadingInterval);
-			content.className = "visible";
-			win.removeChild(loading);
-		}
+		if(typeof md5 !== "function") return;
+
+		clearInterval(loadingInterval);
+		content.className = "visible";
+		win.removeChild(loading);
 	}, 10);
 
 	// tests
+
+	var testsRunning = false,
+		completeTests = 0;
 
 	var tests = [
 		{
@@ -103,7 +104,7 @@
 				state.innerHTML = "OK";
 				completeTests++;
 
-				if(completeTests == tests.length) {
+				if(completeTests === tests.length) {
 					run_tests.className = "button-1";
 					run_tests.innerHTML = "Run Tests";
 					testsRunning = false;
@@ -123,10 +124,14 @@
 	var info_tests_close = d.createElement("div");
 	info_tests_close.className = "close";
 	info_tests_close.onclick = function() {
-		// TODO: localStorage save
+		store.set("infoTestsClosed", true);
 		content_tests.removeChild(info_tests);
 	};
 	info_tests.appendChild(info_tests_close);
+
+	// localStorage init
+	if(store.get("infoTestsClosed"))
+		content_tests.removeChild(info_tests);
 
 	initTests();
 })();
