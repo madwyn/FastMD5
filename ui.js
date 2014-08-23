@@ -37,6 +37,19 @@
 
 				return true;
 			}
+		},
+		{
+			name: "MD5 UTF-8 hash",
+			func: function() {
+				var string1 = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя",
+					string2 = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ",
+					string3 = string1 + string2;
+
+				if(md5(string1) !== md5utf(string1)) return false;
+				if(md5(string2) !== md5utf(string2)) return false;
+
+				return md5(string3) === md5utf(string3);
+			}
 		}
 	];
 

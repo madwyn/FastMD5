@@ -25,19 +25,19 @@
 			var c1 = s.charCodeAt(i),
 				enc = "";
 
-			if(c1 < 128)
+			if(c1 < 128) {
 				end++;
-			else if(c1 > 127 && c1 < 2048)
+				continue;
+			}else if(c1 > 127 && c1 < 2048)
 				enc = String.fromCharCode((c1 >> 6) | 192, (c1 & 63) | 128);
 			else
 				enc = String.fromCharCode((c1 >> 12) | 224, ((c1 >> 6) & 63) | 128, (c1 & 63) | 128);
 
-			if(enc !== "") {
-				if(end > start)
-					utf += s.slice(start, end);
-				utf += enc;
-				start = end = i + 1;
-			}
+			if(end > start)
+				utf += s.slice(start, end);
+
+			utf += enc;
+			start = end = i + 1;
 		}
 
 		if(end > start)
@@ -78,11 +78,8 @@
 		}
 		$1[i >> 2] |= $3[i % 4];
 
-		if(i > 55) {
-			state = !state ? md5cycle($1) : md5cycleAdd(state, $1);
-
-			return md5cycleAdd(state, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, sLen * 8, 0]);
-		}
+		if(i > 55)
+			return md5cycleAdd(state ? md5cycleAdd(state, $1) : md5cycle($1), [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, sLen * 8, 0]);
 
 		$1[14] = sLen * 8;
 
