@@ -193,7 +193,7 @@ table {
 	width: 100%;
 }
 
-table tr.header td {
+table tr:first-child td {
 	background: #222;
 	border-bottom: 1px solid #007acc;
 	color: #42aaff!important;
