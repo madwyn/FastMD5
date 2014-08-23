@@ -1,4 +1,4 @@
-;(function(g) {
+;!function(g) {
 	var $0 = [], // res
 		$1 = new Int32Array(16), // tail
 		$2 = new Int32Array(16), // blocks
@@ -277,4 +277,4 @@
 		md5cycleAdd = md5_asmjs.md5cycleAdd;
 
 	g.md5 = g.md5 || md5_main;
-})(window || global);
+}(this);
