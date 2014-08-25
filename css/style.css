@@ -150,7 +150,7 @@ input {
 
 .close {
 	background-color: #303031;
-	background-image: url("img/close.png");
+	background-image: url("../img/close.png");
 
 	width: 24px;
 	height: 24px;
