@@ -4,7 +4,8 @@ FastMD5
 ## JavaScript MD5 library
 
 The goal of this project is to create an extremely fast MD5 implementation.<br>
-It's based on a [Joseph Myers's high-performance md5](http://www.myersdaily.org/joseph/javascript/md5-text.html).
+It's based on a [Joseph Myers's high-performance md5](http://www.myersdaily.org/joseph/javascript/md5-text.html).<br>
+See latest [jsPerf MD5 comparison](http://jsperf.com/md5-shootout/63).
 
 ## Usage
 
