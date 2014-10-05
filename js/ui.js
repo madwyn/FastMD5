@@ -1,13 +1,24 @@
-(function() {
+;!function() {
 	var d = document;
 
 	var win = d.getElementById("win"),
 		loading = d.getElementById("loading"),
-		content = d.getElementById("content"),
-		content_tests = d.getElementById("content-tests"),
-		content_tests_table = d.getElementById("content-tests-table"),
+		menu = {
+			elem: d.getElementById("menu"),
+			tests: d.getElementById("menu-tests"),
+			benchmark: d.getElementById("menu-benchmark")
+		},
+		content = {
+			elem: d.getElementById("content"),
+			tests: d.getElementById("content-tests"),
+			tests_table: d.getElementById("content-tests-table"),
+			benchmark: d.getElementById("content-benchmark"),
+			benchmark_table: d.getElementById("content-benchmark-table")
+		},
 		info_tests = d.getElementById("info-tests"),
-		run_tests = d.getElementById("run-tests");
+		info_benchmark = d.getElementById("info-benchmark"),
+		run_tests = d.getElementById("run-tests"),
+		run_benchmark = d.getElementById("run-benchmark");
 
 	// loading
 
@@ -15,9 +26,44 @@
 		if(typeof md5 !== "function") return;
 
 		clearInterval(loadingInterval);
-		content.className = "visible";
+		content.elem.className = "visible";
 		win.removeChild(loading);
+
+		initUI();
 	}, 10);
+
+	// UI
+	var tabs = ["tests", "benchmark"],
+		activeTab = null;
+
+	function initUI() {
+		menu.tests.setAttribute("count", tests.length);
+
+		// init tabs
+		tabs.forEach(function(tab) {
+			menu[tab].onclick = function() {
+				selectTab(tab);
+			};
+		});
+
+		selectTab("tests");
+
+		initTests();
+		initBenchmark();
+	}
+
+	function selectTab(tab) {
+		if(tabs.indexOf(tab) === -1 || activeTab === tab) return;
+
+		if(activeTab !== null) {
+			menu[activeTab].className = "";
+			content[activeTab].className = "";
+		}
+
+		menu[tab].className = "active";
+		content[tab].className = "visible";
+		activeTab = tab;
+	}
 
 	// tests
 
@@ -26,11 +72,45 @@
 
 	var tests = [
 		{
-			name: "MD5 hash strings: length 0 to 1000",
+			name: "MD5 hash strings: length 0 to 55",
 			func: function() {
 				var string = "";
 
-				for(var i = 0;i < 1000;i++) {
+				for(var i = 0;i < 55;i++) {
+					if(md5(string) !== md5jkm(string)) return false;
+
+					string += "a";
+				}
+
+				return true;
+			}
+		},
+		{
+			name: "MD5 hash strings: length 55 to 64",
+			func: function() {
+				var string = "";
+
+				for(var i = 0;i < 55;i++)
+					string += "a";
+
+				for(;i < 64;i++) {
+					if(md5(string) !== md5jkm(string)) return false;
+
+					string += "a";
+				}
+
+				return true;
+			}
+		},
+		{
+			name: "MD5 hash strings: length 64 to 1000",
+			func: function() {
+				var string = "";
+
+				for(var i = 0;i < 64;i++)
+					string += "a";
+
+				for(;i < 1000;i++) {
 					if(md5(string) !== md5jkm(string)) return false;
 
 					string += "a";
@@ -69,10 +149,24 @@
 
 			tr.appendChild(name);
 			tr.appendChild(state);
-			content_tests_table.appendChild(tr);
+			content.tests_table.appendChild(tr);
 		}
 
 		run_tests.onclick = runTests;
+
+		// info init
+
+		var close = d.createElement("div");
+		close.className = "close";
+		close.onclick = function() {
+			store.set("infoTestsClosed", true);
+			content.tests.removeChild(info_tests);
+		};
+		info_tests.appendChild(close);
+
+		// localStorage init
+		if(store.get("infoTestsClosed"))
+			content.tests.removeChild(info_tests);
 	}
 
 	function runTests() {
@@ -85,32 +179,7 @@
 		run_tests.innerHTML = "Running...";
 
 		for(var i = 0, j = tests.length;i < j;i++)
-			runTest(i);
-	}
-
-	function runTest(i) {
-		setTimeout(function() {
-			var tr = document.getElementById("test-" + i),
-				state = document.getElementById("test-state-" + i),
-				correct = tests[i].func();
-
-			if(!correct) {
-				tr.className = "error";
-				state.innerHTML = "ERROR";
-				run_tests.innerHTML = "ERROR";
-				return;
-			}else{
-				tr.className = "ok";
-				state.innerHTML = "OK";
-				completeTests++;
-
-				if(completeTests === tests.length) {
-					run_tests.className = "button-1";
-					run_tests.innerHTML = "Run Tests";
-					testsRunning = false;
-				}
-			}
-		}, i * 100);
+			startTest(i);
 	}
 
 	function clearTests() {
@@ -121,17 +190,163 @@
 		}
 	}
 
-	var info_tests_close = d.createElement("div");
-	info_tests_close.className = "close";
-	info_tests_close.onclick = function() {
-		store.set("infoTestsClosed", true);
-		content_tests.removeChild(info_tests);
-	};
-	info_tests.appendChild(info_tests_close);
+	function startTest(i) {
+		setTimeout(function() {
+			var tr = document.getElementById("test-" + i),
+				state = document.getElementById("test-state-" + i),
+				correct = tests[i].func();
 
-	// localStorage init
-	if(store.get("infoTestsClosed"))
-		content_tests.removeChild(info_tests);
+			if(!correct) {
+				tr.className = "error";
+				state.innerHTML = "ERROR";
+				run_tests.innerHTML = "ERROR";
+				return;
+			}
 
-	initTests();
-})();
+			tr.className = "ok";
+			state.innerHTML = "OK";
+
+			if(++completeTests === tests.length) {
+				run_tests.className = "button-1";
+				run_tests.innerHTML = "Run Tests";
+				testsRunning = false;
+			}
+		}, i * 100);
+	}
+
+	// benchmark
+
+	var benchmarkRunning = false,
+		completeBenchmarks = 0;
+
+	var benchmarks = [
+		{
+			name: "FastMD5 — 1 000 000 hashes",
+			func: function() {
+				var start = new Date();
+				for(var i = 0;i < 1000000;i++)
+					md5("Hello World", true);
+				var end = new Date();
+
+				return end - start;
+			}
+		},
+		{
+			name: "Joseph Myers's MD5 — 1 000 000 hashes",
+			func: function() {
+				var start = new Date();
+				for(var i = 0;i < 1000000;i++)
+					md5jkm("Hello World");
+				var end = new Date();
+
+				return end - start;
+			}
+		},
+		{
+			name: "Joseph Myers's MD5 + UTF — 1 000 000 hashes",
+			func: function() {
+				var start = new Date();
+				for(var i = 0;i < 1000000;i++)
+					md5utf("Hello World");
+				var end = new Date();
+
+				return end - start;
+			}
+		}
+	];
+
+	function initBenchmark() {
+		for(var i = 0, j = benchmarks.length;i < j;i++) {
+			var tr = d.createElement("tr"),
+				name = d.createElement("td"),
+				time = d.createElement("td"),
+				efficiency = d.createElement("td");
+
+			tr.id = "benchmark-" + i;
+			name.id = "benchmark-name-" + i;
+			time.id = "benchmark-time-" + i;
+			efficiency.id = "benchmark-efficiency-" + i;
+
+			name.innerHTML = benchmarks[i].name;
+			time.innerHTML = "?";
+			efficiency.innerHTML = "?";
+
+			tr.appendChild(name);
+			tr.appendChild(time);
+			tr.appendChild(efficiency);
+			content.benchmark_table.appendChild(tr);
+		}
+
+		run_benchmark.onclick = runBenchmark;
+
+		// info init
+
+		var close = d.createElement("div");
+		close.className = "close";
+		close.onclick = function() {
+			store.set("infoBenchmarkClosed", true);
+			content.benchmark.removeChild(info_benchmark);
+		};
+		info_benchmark.appendChild(close);
+
+		// localStorage init
+		if(store.get("infoBenchmarkClosed"))
+			content.benchmark.removeChild(info_benchmark);
+	}
+
+	// todo: make asynchronous
+	function runBenchmark() {
+		if(benchmarkRunning) return;
+		benchmarkRunning = true;
+
+		clearBenchmark();
+
+		run_benchmark.className = "button-1 active";
+		run_benchmark.innerHTML = "Running...";
+
+		var timeArray = [];
+		for(var i = 0, j = benchmarks.length;i < j;i++)
+			startBenchmark(i, timeArray);
+
+		var maxTime = Math.max.apply(Math, timeArray),
+			minTime = Math.min.apply(Math, timeArray),
+			maxTimeIndex = timeArray.indexOf(maxTime),
+			minTimeIndex = timeArray.indexOf(minTime);
+
+		for(i = 0, j = timeArray.length;i < j;i++)
+			getEfficiency(i, timeArray, maxTime);
+
+		document.getElementById("benchmark-" + maxTimeIndex).className = "error";
+		document.getElementById("benchmark-" + minTimeIndex).className = "ok";
+	}
+
+	function clearBenchmark() {
+		completeBenchmarks = 0;
+		for(var i = 0, j = benchmarks.length;i < j;i++) {
+			document.getElementById("benchmark-" + i).className = "";
+			document.getElementById("benchmark-time-" + i).innerHTML = "?";
+			document.getElementById("benchmark-efficiency-" + i).innerHTML = "?";
+		}
+	}
+
+	function startBenchmark(i, timeArray) {
+		var tr = document.getElementById("benchmark-" + i),
+			time = document.getElementById("benchmark-time-" + i),
+			timeValue = benchmarks[i].func();
+
+		time.innerHTML = timeValue + "ms";
+		timeArray.push(timeValue);
+
+		if(++completeBenchmarks === benchmarks.length) {
+			run_benchmark.className = "button-1";
+			run_benchmark.innerHTML = "Run Benchmark";
+			benchmarkRunning = false;
+		}
+
+		//console.log(i, time);
+	}
+
+	function getEfficiency(i, timeArray, maxTime) {
+		document.getElementById("benchmark-efficiency-" + i).innerHTML = Math.floor(maxTime * 100 / timeArray[i]) + "%";
+	}
+}();

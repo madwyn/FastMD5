@@ -58,7 +58,7 @@ input {
 	border: none;
 	text-align: center;
 
-	width: 100px;
+	width: 120px;
 
 	padding: 2px;
 }
@@ -138,6 +138,10 @@ input {
 	padding: 15px;
 }
 
+#content > div {
+	display: none;
+}
+
 .info {
 	background: #303031;
 	border: 1px solid #007acc;
@@ -171,21 +175,6 @@ input {
 	background-color: #252526;
 }
 
-/* transitions */
-.button-1 {
-	transition: all 0.1s;
-}
-
-#menu div {
-	transition: all 0.1s;
-}
-
-.close {
-	transition: all 0.1s;
-}
-
-/* tests table */
-
 table {
 	background: #303031;
 	border: 1px solid #007acc;
@@ -218,4 +207,9 @@ table tr td {
 table tr td:nth-child(1) {
 	color: #aaa;
 	text-align: left;
+}
+
+/* transition */
+.button-1, #menu div, .close {
+	transition: all 0.1s;
 }
