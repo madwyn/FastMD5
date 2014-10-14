@@ -1,24 +1,26 @@
 ;!function() {
 	var d = document;
 
-	var win = d.getElementById("win"),
-		loading = d.getElementById("loading"),
+	function $(id) { return d.getElementById(id); }
+
+	var win = $("win"),
+		loading = $("loading"),
 		menu = {
-			elem: d.getElementById("menu"),
-			tests: d.getElementById("menu-tests"),
-			benchmark: d.getElementById("menu-benchmark")
+			elem: $("menu"),
+			tests: $("menu-tests"),
+			benchmark: $("menu-benchmark")
 		},
 		content = {
-			elem: d.getElementById("content"),
-			tests: d.getElementById("content-tests"),
-			tests_table: d.getElementById("content-tests-table"),
-			benchmark: d.getElementById("content-benchmark"),
-			benchmark_table: d.getElementById("content-benchmark-table")
+			elem: $("content"),
+			tests: $("content-tests"),
+			tests_table: $("content-tests-table"),
+			benchmark: $("content-benchmark"),
+			benchmark_table: $("content-benchmark-table")
 		},
-		info_tests = d.getElementById("info-tests"),
-		info_benchmark = d.getElementById("info-benchmark"),
-		run_tests = d.getElementById("run-tests"),
-		run_benchmark = d.getElementById("run-benchmark");
+		info_tests = $("info-tests"),
+		info_benchmark = $("info-benchmark"),
+		run_tests = $("run-tests"),
+		run_benchmark = $("run-benchmark");
 
 	// loading
 
@@ -185,15 +187,15 @@
 	function clearTests() {
 		completeTests = 0;
 		for(var i = 0, j = tests.length;i < j;i++) {
-			document.getElementById("test-" + i).className = "";
-			document.getElementById("test-state-" + i).innerHTML = "?";
+			$("test-" + i).className = "";
+			$("test-state-" + i).innerHTML = "?";
 		}
 	}
 
 	function startTest(i) {
 		setTimeout(function() {
-			var tr = document.getElementById("test-" + i),
-				state = document.getElementById("test-state-" + i),
+			var tr = $("test-" + i),
+				state = $("test-state-" + i),
 				correct = tests[i].func();
 
 			if(!correct) {
@@ -316,22 +318,22 @@
 		for(i = 0, j = timeArray.length;i < j;i++)
 			getEfficiency(i, timeArray, maxTime);
 
-		document.getElementById("benchmark-" + maxTimeIndex).className = "error";
-		document.getElementById("benchmark-" + minTimeIndex).className = "ok";
+		$("benchmark-" + maxTimeIndex).className = "error";
+		$("benchmark-" + minTimeIndex).className = "ok";
 	}
 
 	function clearBenchmark() {
 		completeBenchmarks = 0;
 		for(var i = 0, j = benchmarks.length;i < j;i++) {
-			document.getElementById("benchmark-" + i).className = "";
-			document.getElementById("benchmark-time-" + i).innerHTML = "?";
-			document.getElementById("benchmark-efficiency-" + i).innerHTML = "?";
+			$("benchmark-" + i).className = "";
+			$("benchmark-time-" + i).innerHTML = "?";
+			$("benchmark-efficiency-" + i).innerHTML = "?";
 		}
 	}
 
 	function startBenchmark(i, timeArray) {
-		var tr = document.getElementById("benchmark-" + i),
-			time = document.getElementById("benchmark-time-" + i),
+		var tr = $("benchmark-" + i),
+			time = $("benchmark-time-" + i),
 			timeValue = benchmarks[i].func();
 
 		time.innerHTML = timeValue + "ms";
@@ -347,6 +349,6 @@
 	}
 
 	function getEfficiency(i, timeArray, maxTime) {
-		document.getElementById("benchmark-efficiency-" + i).innerHTML = Math.floor(maxTime * 100 / timeArray[i]) + "%";
+		$("benchmark-efficiency-" + i).innerHTML = Math.floor(maxTime * 100 / timeArray[i]) + "%";
 	}
 }();
