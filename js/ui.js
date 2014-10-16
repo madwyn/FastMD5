@@ -128,10 +128,10 @@
 					string2 = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ",
 					string3 = string1 + string2;
 
-				if(md5(string1) !== md5utf(string1)) return false;
-				if(md5(string2) !== md5utf(string2)) return false;
+				if(md5(string1, false, true) !== jsmd5(string1)) return false;
+				if(md5(string2, false, true) !== jsmd5(string2)) return false;
 
-				return md5(string3) === md5utf(string3);
+				return md5(string3, false, true) === jsmd5(string3);
 			}
 		}
 	];
@@ -227,7 +227,18 @@
 			func: function() {
 				var start = new Date();
 				for(var i = 0;i < 1000000;i++)
-					md5("Hello World", true);
+					md5("Hello, World!", true);
+				var end = new Date();
+
+				return end - start;
+			}
+		},
+		{
+			name: "FastMD5 + UTF — 1 000 000 hashes",
+			func: function() {
+				var start = new Date();
+				for(var i = 0;i < 1000000;i++)
+					md5("Привет, Мир!", true, true);
 				var end = new Date();
 
 				return end - start;
@@ -238,18 +249,18 @@
 			func: function() {
 				var start = new Date();
 				for(var i = 0;i < 1000000;i++)
-					md5jkm("Hello World");
+					md5jkm("Hello, World!");
 				var end = new Date();
 
 				return end - start;
 			}
 		},
 		{
-			name: "Joseph Myers's MD5 + UTF — 1 000 000 hashes",
+			name: "js-md5 + UTF — 1 000 000 hashes",
 			func: function() {
 				var start = new Date();
 				for(var i = 0;i < 1000000;i++)
-					md5utf("Hello World");
+					jsmd5("Привет, Мир!");
 				var end = new Date();
 
 				return end - start;
