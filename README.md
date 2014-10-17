@@ -9,13 +9,13 @@ See latest [jsPerf MD5 comparison](http://jsperf.com/md5-shootout/63).
 
 ## Usage
 
-Download the [library](https://raw.githubusercontent.com/iReal/FastMD5/master/lib/md5.js) and include it.
+Get the [library](https://raw.githubusercontent.com/iReal/FastMD5/master/lib/md5.js) and include it.
 
 ```html
 <script src="path_to/md5.js"></script>
 ```
 
-Then call it:
+Then use it:
 
 ```js
 var string, hash;
@@ -26,12 +26,12 @@ hash = md5(string);
 console.log(hash); // -> "900150983cd24fb0d6963f7d28e17f72"
 ```
 
-#### Additional params
+#### Optional
 
 `md5`(`data`, `[arrayOutput]`, `[unicode]`);
 
-- `arrayOutput` - if set to `true`, then result will be an array of chars (not a string)
-- `unicode` - set `true` if there are any Unicode chars in your data to get a correct output
+- `arrayOutput` - if `true`, then the result is an array of chars (not a string)
+- `unicode` - set `true` if there are Unicode chars in `data` to get a correct output
 
 ## License
 
